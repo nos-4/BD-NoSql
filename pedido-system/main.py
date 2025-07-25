@@ -1,11 +1,13 @@
-from pedido_service import criar_pedido, buscar_pedido_por_id
+from pedido_service import criar_pedido, buscar_pedido_por_id, atualizar_pedido, cancelar_pedido
 
 def menu():
     while True:
         print("\n=== Sistema de Pedidos ===")
         print("[1] Criar novo pedido")
         print("[2] Buscar pedido por ID")
-        print("[0] Sair")
+        print("[3] Cancelar pedido")     
+        print("[4] Atualizar pedido")
+        print("[0] Sair") 
         opcao = input("Escolha uma opção: ")
 
         if opcao == "1":
@@ -36,6 +38,16 @@ def menu():
         elif opcao == "0":
             print("👋 Saindo do sistema...")
             break
+        elif opcao == "5":
+            id_cancelar = input("Digite o ID do pedido para cancelar: ")
+            cancelar_pedido(id_cancelar)
+        elif opcao == "6":
+            id_atualizar = input("Digite o ID do pedido para atualizar: ")
+            novo_nome = input("Novo nome do cliente (pressione Enter para manter o mesmo): ")
+            novo_produto = input("Novo produto (pressione Enter para manter o mesmo): ")
+            nova_quantidade = input("Nova quantidade (pressione Enter para manter a mesma): ")
+            nova_quantidade = int(nova_quantidade) if nova_quantidade else None
+            atualizar_pedido(id_atualizar, novo_nome or None, novo_produto or None, nova_quantidade)
         else:
             print("⚠️ Opção inválida.")
 
