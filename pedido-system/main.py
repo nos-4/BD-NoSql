@@ -38,10 +38,10 @@ def menu():
         elif opcao == "0":
             print("👋 Saindo do sistema...")
             break
-        elif opcao == "5":
+        elif opcao == "3":
             id_cancelar = input("Digite o ID do pedido para cancelar: ")
             cancelar_pedido(id_cancelar)
-        elif opcao == "6":
+        elif opcao == "4":
             id_atualizar = input("Digite o ID do pedido para atualizar: ")
             novo_nome = input("Novo nome do cliente (pressione Enter para manter o mesmo): ")
             novo_produto = input("Novo produto (pressione Enter para manter o mesmo): ")

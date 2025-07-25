@@ -112,6 +112,10 @@ tk.Label(frame_alterar, text="ID do Pedido", bg="#f0f0f0").pack(pady=10)
 entry_id_alt = tk.Entry(frame_alterar, width=40)
 entry_id_alt.pack()
 
+tk.Label(frame_alterar, text="Novo Nome do Cliente", bg="#f0f0f0").pack(pady=5)
+entry_novo_nome = tk.Entry(frame_alterar, width=40)
+entry_novo_nome.pack()
+
 tk.Label(frame_alterar, text="Novo Produto", bg="#f0f0f0").pack(pady=5)
 entry_novo_produto = tk.Entry(frame_alterar, width=40)
 entry_novo_produto.pack()
@@ -122,15 +126,27 @@ entry_nova_quantidade.pack()
 
 def alterar():
     pedido_id = entry_id_alt.get()
+    novo_nome = entry_novo_nome.get()           # novo campo para nome do cliente
     novo_produto = entry_novo_produto.get()
-    nova_quantidade = entry_nova_quantidade.get()
+    nova_quantidade_str = entry_nova_quantidade.get()
 
-    if not pedido_id or not novo_produto or not nova_quantidade:
+    if not pedido_id or not novo_nome or not novo_produto or not nova_quantidade_str:
         messagebox.showwarning("Atenção", "Preencha todos os campos.")
         return
 
     try:
-        atualizado = atualizar_pedido(pedido_id, novo_produto, int(nova_quantidade))
+        nova_quantidade = int(nova_quantidade_str)
+    except ValueError:
+        messagebox.showerror("Erro", "Quantidade inválida. Digite um número.")
+        return
+
+    try:
+        atualizado = atualizar_pedido(
+            pedido_id,
+            novo_nome=novo_nome,
+            novo_produto=novo_produto,
+            nova_quantidade=nova_quantidade
+        )
         if atualizado:
             messagebox.showinfo("Sucesso", "Pedido atualizado com sucesso.")
         else:
@@ -138,6 +154,7 @@ def alterar():
         mostrar_tela_inicial()
     except Exception as e:
         messagebox.showerror("Erro", f"Erro ao atualizar pedido: {e}")
+
 
 def cancelar():
     pedido_id = entry_id_alt.get()
