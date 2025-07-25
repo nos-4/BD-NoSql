@@ -1,0 +1,41 @@
+# Bytecode do Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Ambiente virtual
+venv/
+.env/
+
+# Arquivos de log
+*.log
+
+# Arquivos de configuração do sistema operacional
+.DS_Store
+Thumbs.db
+
+# Configurações do VSCode
+.vscode/
+
+# Arquivos de pacotes
+*.egg-info/
+dist/
+build/
+
+# Banco de dados local (se houver)
+*.db
+
+# Arquivos de backup
+*~
+*.bak
+*.swp
+
+# Outros específicos do projeto
+database/__pycache__/
+models/__pycache__/
+pedido_service/__pycache__/
+main/__pycache__/
+interface/__pycache__/
+
+# Arquivos de configuração do Docker (se criados)
+docker-compose.override.yml
