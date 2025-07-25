@@ -11,7 +11,12 @@ def menu():
         if opcao == "1":
             nome = input("Nome do cliente: ")
             produto = input("Produto: ")
-            quantidade = input("Quantidade: ")
+            try:
+                quantidade = int(input("Quantidade: "))
+            except ValueError:
+                print("⚠️ Quantidade inválida, deve ser um número.")
+                continue
+
             pedido = criar_pedido(nome, produto, quantidade)
             print(f"✅ Pedido criado: ID {pedido.id}")
 
@@ -21,6 +26,7 @@ def menu():
             if pedido:
                 print("\n📄 Dados do Pedido:")
                 print(f"Cliente: {pedido.nome_cliente}")
+                print(f"ID: {str(pedido.id)}")
                 print(f"Produto: {pedido.produto}")
                 print(f"Quantidade: {pedido.quantidade}")
                 print(f"Data: {pedido.data_criacao}")
