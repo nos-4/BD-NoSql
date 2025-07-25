@@ -13,7 +13,7 @@ def criar_pedido(nome_cliente, produto, quantidade):
     
     pedido = Pedido(nome_cliente, produto, quantidade)
     result = colecao_pedidos.insert_one(pedido.to_dict())
-    pedido.id = result.inserted_id #Armazena o ID gerado automaticamente pelo Mongo (ObjectId) no objeto.
+    pedido.id = str(result.inserted_id)  # Armazena como string!
     print(f"Pedido criado com ID: {pedido.id}")
     return pedido
 
@@ -26,7 +26,7 @@ def buscar_pedido_por_id(id_pedido):
             return Pedido.from_dict(cached_pedido)
         
         # 2 Busca no mongoDB
-        pedido_dict = colecao_pedidos.find_one({"_id": ObjectId(id_pedido)}) #Converte o ID (string) para ObjectId e busca no banco
+        pedido_dict = colecao_pedidos.find_one({"_id": ObjectId(id_pedido)})
         if pedido_dict:
             print("Pedido encontrado no MongoDb. Atualizandoo o cahe")
             set_pedido_cache(id_pedido, pedido_dict)
