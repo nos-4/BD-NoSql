@@ -43,7 +43,8 @@ def criar_pedido(nome_cliente, produto, quantidade):
         print(f"📨 Notificação enviada para a fila 'pedido_criado': {mensagem}")
         conexao.close()
     except Exception as e:
-        print(f"Erro ao enviar notificação para o RabbitMQ: {e}")
+        print(f"Erro ao enviar notificação para o RabbitMQ: {repr(e)}")
+
     
     return pedido
 
