@@ -1,10 +1,14 @@
 from models import Pedido
 from database import get_database
-from bson import ObjectId #usado para converter strings em IDs válidos do MongoDB.
-from cache import get_pedido_cache, set_pedido_cache , redis_client
+from bson import ObjectId  # usado para converter strings em IDs válidos do MongoDB.
+from cache import get_pedido_cache, set_pedido_cache, redis_client
+
+# IMPORTAÇÃO ADICIONADA PARA RABBITMQ
+import pika
+import json
 
 db = get_database()
-colecao_pedidos = db["pedidos"] #tabela onde os pedidos serão armazenados.
+colecao_pedidos = db["pedidos"]  # tabela onde os pedidos serão armazenados.
 
 
 def criar_pedido(nome_cliente, produto, quantidade):
@@ -15,7 +19,34 @@ def criar_pedido(nome_cliente, produto, quantidade):
     result = colecao_pedidos.insert_one(pedido.to_dict())
     pedido.id = str(result.inserted_id)  # Armazena como string!
     print(f"Pedido criado com ID: {pedido.id}")
+
+    # ENVIO PARA FILA RABBITMQ (ADICIONADO)
+    try:
+        conexao = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+        canal = conexao.channel()
+        canal.queue_declare(queue='pedido_criado', durable=True)
+
+        mensagem = {
+            'pedido_id': pedido.id,
+            'cliente': nome_cliente,
+            'produto': produto,
+            'quantidade': quantidade
+        }
+
+        canal.basic_publish(
+            exchange='',
+            routing_key='pedido_criado',
+            body=json.dumps(mensagem),
+            properties=pika.BasicProperties(delivery_mode=2)  # mensagem persistente
+        )
+
+        print(f"📨 Notificação enviada para a fila 'pedido_criado': {mensagem}")
+        conexao.close()
+    except Exception as e:
+        print(f"Erro ao enviar notificação para o RabbitMQ: {e}")
+    
     return pedido
+
 
 def buscar_pedido_por_id(id_pedido):
     try:
@@ -35,6 +66,7 @@ def buscar_pedido_por_id(id_pedido):
     except Exception as e:
         print(f"Erro ao buscar pedido: {e}")
         return None
+
 
 def atualizar_pedido(id_pedido, novo_nome=None, novo_produto=None, nova_quantidade=None):
     try:
@@ -68,6 +100,7 @@ def atualizar_pedido(id_pedido, novo_nome=None, novo_produto=None, nova_quantida
     except Exception as e:
         print(f"Erro ao atualizar pedido: {e}")
         return False
+
 
 def cancelar_pedido(id_pedido):
     try:
